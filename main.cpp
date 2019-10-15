@@ -29,6 +29,7 @@ float lastY =  600.0 / 2.0;
 float pitch = 0.0f;
 bool firstMouse = true;
 
+glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
 int main()
 {
     // glfw: initialize and configure
@@ -61,15 +62,6 @@ int main()
         return -1;
     }    
     glEnable(GL_DEPTH_TEST);  
-
-    /*
-    float vertices[] = {
-    // positions          // colors           // texture coords
-     0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,  
-     0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f, 
-    -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f, 
-    -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f
-    };*/
 
     float vertices[] = {
         -0.5f, -0.5f, -0.5f,  0.0f, 0.0f, 1.0f,
@@ -128,12 +120,27 @@ int main()
     glm::vec3(-1.3f,  1.0f, -1.5f)  
     };
 
+    float verts[] ={
+        0.0f, 0.0f, 0.0f,
+        0.1f, 0.0f, 0.0f,
+        0.2f, 0.0f, 0.0f,
+        0.3f, 0.0f, 0.0f,
+        0.4f, 0.0f, 0.0f,
+        0.0f, 0.1f, 0.0f,
+        0.1f, 0.1f, 0.0f,
+        0.2f, 0.1f, 0.0f,
+        0.3f, 0.1f, 0.0f,
+        0.4f, 0.1f, 0.0f,
+        0.1f, 0.2f, 0.0f,
+        0.2f, 0.2f, 0.0f,
+        0.3f, 0.2f, 0.0f,
+        0.4f, 0.2f, 0.0f
+    }
+    unsigned int indices ={
+        
+    }
     Object a(vertices,glm::vec3( 0.0f,  0.0f,  0.0f));
-
-	unsigned int indices[] = {  // note that we start from 0!
-    0, 1, 3,   // first triangle
-    1, 2, 3    // second triangle
-	};  
+    Camera cam(800,600);
 
  
      
@@ -160,23 +167,8 @@ int main()
          
         counter+=0.1f;
         
-        glm::mat4 projection    = glm::mat4(1.0f);
-        float radius = 10.0f;
-        if(pitch > 89.0f)
-        pitch = 89.0f;
-        if(pitch < -89.0f)
-        pitch = -89.0f;
-        glm::vec3 front;
-        front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-        front.y = sin(glm::radians(pitch));
-        front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-        cameraFront = glm::normalize(front);
-
-        float camX = sin(glfwGetTime()) * radius;
-        float camZ = cos(glfwGetTime()) * radius;
         glm::mat4 view;
         view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);        
-        projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
         modelShader.uniformMat4(viewM, view);
         modelShader.uniformMat4(projectionM, projection);
 
