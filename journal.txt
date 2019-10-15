@@ -1,0 +1,6 @@
+Day 1(10/11/2019)Friday:
+Spent hours on end trying to get glfw, glad to compile and run the test program. After a long hard battle was able to get it working. Fucking hell this is going to be a long project indeed. 
+Day 2(10/12/2019)Saturday:
+Begun re-learning about opengl got vertex and frag shaders working and was able to render a triangle. Got the basics down a bit Long way to go.
+Day 3(10/13/2019)Sunday:
+Finished the camera movement and started learning on lighting. But spent most of the time doing clean up on the project and organizing code. 
