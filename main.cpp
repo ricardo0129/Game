@@ -9,6 +9,7 @@
 #include <iostream>
 #include "shader.h"
 #include "render.h"
+#include "camera.h"
 #include "object.h"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -18,14 +19,14 @@ void processInput(GLFWwindow *window);
 
 // settings
 const unsigned int SCR_WIDTH = 800;
-const unsigned int SCR_HEIGHT = 600;
+const unsigned int SCR_HEIGHT = 800;
 
 glm::vec3 cameraPos   = glm::vec3(0.0f, 0.0f,  3.0f);
 glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
 glm::vec3 cameraUp    = glm::vec3(0.0f, 1.0f,  0.0f);
 float yaw = 0.0f;
 float lastX =  800.0f / 2.0;
-float lastY =  600.0 / 2.0;
+float lastY =  800.0 / 2.0;
 float pitch = 0.0f;
 bool firstMouse = true;
 
@@ -121,32 +122,35 @@ int main()
     };
 
     float verts[] ={
-        0.0f, 0.0f, 0.0f,
-        0.1f, 0.0f, 0.0f,
-        0.2f, 0.0f, 0.0f,
-        0.3f, 0.0f, 0.0f,
-        0.4f, 0.0f, 0.0f,
-        0.0f, 0.1f, 0.0f,
-        0.1f, 0.1f, 0.0f,
-        0.2f, 0.1f, 0.0f,
-        0.3f, 0.1f, 0.0f,
-        0.4f, 0.1f, 0.0f,
-        0.1f, 0.2f, 0.0f,
-        0.2f, 0.2f, 0.0f,
-        0.3f, 0.2f, 0.0f,
-        0.4f, 0.2f, 0.0f
-    }
-    unsigned int indices ={
-        
-    }
+        0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
+        0.1f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f,
+        0.2f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f,
+        0.3f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f,
+        0.4f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f,
+        0.0f, 0.1f, 0.0f, 0.0f, 0.0f, 1.0f,
+        0.1f, 0.1f, 0.0f, 1.0f, 1.0f, 1.0f,
+        0.2f, 0.1f, 0.0f, 0.0f, 0.0f, 0.0f,
+        0.3f, 0.1f, 0.0f, 0.0f, 1.0f, 0.0f,
+        0.4f, 0.1f, 0.0f, 1.0f, 0.0f, 1.0f,
+        0.1f, 0.2f, 0.0f, 1.0f, 0.0f, 1.0f,
+        0.2f, 0.2f, 0.0f, 0.0f, 1.0f, 1.0f,
+        0.3f, 0.2f, 0.0f, 0.0f, 1.0f, 1.0f,
+        0.4f, 0.2f, 0.0f, 0.0f, 0.0f, 0.0f
+    };
+    unsigned int indeces[] =
+    {1, 6, 2, 7, 3, 8, 4, 9, 5, 10, 10, 6, 6, 11, 7, 12, 8, 13, 9, 14, 10, 15};
+
     Object a(vertices,glm::vec3( 0.0f,  0.0f,  0.0f));
-    Camera cam(800,600);
+    Camera cam(800,800
+    );
 
  
      
     Shader modelShader("vertex.shader", "fragment.shader");
  
-    Render cube(vertices, sizeof(vertices), 36);
+    Render terrain(verts, sizeof(verts), indeces, sizeof(indeces));
+
+    Render cube(vertices, sizeof(vertices));
 
     modelShader.use();
     unsigned int modelM = modelShader.uniformLocation("model");
@@ -179,6 +183,13 @@ int main()
             cube.draw();
         }
 
+        glm::mat4 trans = glm::mat4(1.0f);
+        //model = glm::translate(trans, glm::vec3(0.0,0.0,0.0));
+        model = glm::scale(trans, glm::vec3(10,10,10));
+        modelShader.uniformMat4(modelM, model);
+        terrain.bind();
+        terrain.draw();
+
         glfwSwapBuffers(window);
         glfwPollEvents();
 
@@ -194,7 +205,7 @@ void processInput(GLFWwindow *window)
 {
     if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
     glfwSetWindowShouldClose(window, true);
-    float cameraSpeed = 0.05f; // adjust accordingly
+    float cameraSpeed = 0.005f; // adjust accordingly
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
     cameraPos += cameraSpeed * cameraFront;
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
