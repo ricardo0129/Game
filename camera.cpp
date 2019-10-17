@@ -4,7 +4,7 @@ Camera::Camera(const unsigned int SCR_WIDTH, const unsigned int SCR_HEIGHT)
 {
 
 	projection  = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
-	cameraPos   = glm::vec3(0.0f, 0.0f,  3.0f);
+	cameraPos   = glm::vec3(0.0f, 0.0f,  0.0f);
 	cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
 	cameraUp    = glm::vec3(0.0f, 1.0f,  0.0f);
 }

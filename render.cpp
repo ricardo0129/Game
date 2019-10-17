@@ -14,12 +14,13 @@ Render::Render(float* vertices, int verticesCount)
     glEnableVertexAttribArray(1);
 }
 
-Render::Render(float* vertices, int verticesCount, unsigned int indices[], int indexCount)
+Render::Render(float* vertices, int verticesCount, unsigned int* indices, int indexCount)
 {
     triangles = (int)(verticesCount/3);
     glGenBuffers(1, &VBO);
     glGenBuffers(1, &EBO);
     glGenVertexArrays(1, &VAO);
+    glBindVertexArray(VAO);
     glBindBuffer(GL_ARRAY_BUFFER,VBO);
     glBufferData(GL_ARRAY_BUFFER, verticesCount, vertices, GL_STATIC_DRAW);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
@@ -38,4 +39,9 @@ void Render::draw()
 void Render::bind()
 {
 	glBindVertexArray(VAO);
+}
+
+void Render::drawElements()
+{
+    glDrawElements(GL_TRIANGLES, triangles, GL_UNSIGNED_INT, 0);
 }
