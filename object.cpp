@@ -9,7 +9,8 @@ Object::Object(float* verts, glm::vec3 position)
 	glm::mat4 trans = glm::mat4(1.0f);
     model = glm::translate(trans, pos);
     velocity = glm::vec3(0.0f,0.0f,0.0f);
-    acceleration = glm::vec3(0.0,-0.0001,0.0);
+    acceleration = glm::vec3(0.0,0.0,0.0);
+    mass=10.0;
 }
 
 void Object::translate(glm::vec3 move)
@@ -44,6 +45,11 @@ glm::vec3 Object::getVelocity()
 glm::vec3 Object::getAcceleration()
 {
 	return acceleration;
+}
+
+float Object::getMass()
+{
+	return mass;
 }
 
 void Object::setPos(glm::vec3 newPos)

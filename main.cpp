@@ -14,8 +14,11 @@
 #include <stdio.h>     
 #include <stdlib.h>    
 #include <time.h>       
+#include <unistd.h>
 #include "physics.h"
+#include "projectile.h"
 
+using namespace std;
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 
@@ -24,8 +27,9 @@ void processInput(GLFWwindow *window);
 // settings
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 800;
+const unsigned int FPS=60;
 
-glm::vec3 cameraPos   = glm::vec3(0.0f, 0.0f,  0.0f);
+glm::vec3 cameraPos   = glm::vec3(-10.0f, 0.0f,  0.0f);
 glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
 glm::vec3 cameraUp    = glm::vec3(0.0f, 1.0f,  0.0f);
 float yaw = 0.0f;
@@ -128,9 +132,9 @@ int main()
             verts[i*60+j*6+0]=j*1.0/10.0;
             verts[i*60+j*6+1]=height;
             verts[i*60+j*6+2]=i*1.0/10.0;
-            verts[i*60+j*6+3]=height;
-            verts[i*60+j*6+4]=height;
-            verts[i*60+j*6+5]=height;
+            verts[i*60+j*6+3]=1.0-height;
+            verts[i*60+j*6+4]=1.0-height;
+            verts[i*60+j*6+5]=1.0-height;
         }
     }
 
@@ -157,6 +161,7 @@ int main()
 
     Render cube(vertices, sizeof(vertices));
 
+
     modelShader.use();
     unsigned int modelM = modelShader.uniformLocation("model");
     unsigned int viewM = modelShader.uniformLocation("view");
@@ -164,6 +169,8 @@ int main()
     
     float counter=0.0f;
     glm::mat4 model = a.getModel();
+    float startime=glfwGetTime();
+    int frames=0;
     while (!glfwWindowShouldClose(window))
     {
         // input
@@ -181,17 +188,27 @@ int main()
         modelShader.uniformMat4(viewM, view);
         modelShader.uniformMat4(projectionM, projection);
 
+        frames++;
+        if((glfwGetTime()-startime)>=1.0)
+        {
+            cout<<frames<<endl;
+            frames=0;
+            startime=glfwGetTime();
+        }
+
+
         for(unsigned int i = 0; i < 1; i++)
         {
             model = a.getModel();
             cube.bind(); 
             modelShader.uniformMat4(modelM, glm::translate(model, a.getPos()));
-            a.setPos(engine.updatePos(a.getPos(),a.getVelocity()));
-            a.setVelocity(engine.updateVelocity(a.getVelocity(),a.getAcceleration()));
+            engine.update(&a, glm::vec3(0.0,0.0,0.0));
+            //a.setVelocity(engine.updateVelocity(a.getVelocity(),a.getAcceleration()));
             cube.draw();
         }
 
         glm::mat4 trans = glm::mat4(1.0f);
+        trans = glm::translate(trans, glm::vec3(-100, -50, -100));
         model = glm::scale(trans, glm::vec3(400, 40, 400));  
         modelShader.uniformMat4(modelM, model);
         terrain.bind();

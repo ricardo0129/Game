@@ -10,6 +10,7 @@ private:
 	glm::vec3 velocity;
 	glm::vec3 acceleration;
 	glm::mat4 model;
+	float mass;
 	float* vertices;
 	float angle;
 public:
@@ -21,6 +22,7 @@ public:
 	void setPos(glm::vec3 newPos);
 	void setVelocity(glm::vec3 newVelocity);
 	void setAcceleration(glm::vec3 newAcceleration);
+	float getMass();
 	void rotate(float angle);
 	glm::mat4 getModel();
 };
