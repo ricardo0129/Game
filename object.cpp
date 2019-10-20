@@ -10,7 +10,8 @@ Object::Object(float* verts, glm::vec3 position)
     model = glm::translate(trans, pos);
     velocity = glm::vec3(0.0f,0.0f,0.0f);
     acceleration = glm::vec3(0.0,0.0,0.0);
-    mass=10.0;
+    totalForce = glm::vec3(0.0,0.0,0.0);
+    mass=1.0f;
 }
 
 void Object::translate(glm::vec3 move)
@@ -47,6 +48,11 @@ glm::vec3 Object::getAcceleration()
 	return acceleration;
 }
 
+glm::vec3 Object::getTotalForce()
+{
+	return totalForce;
+}
+
 float Object::getMass()
 {
 	return mass;
@@ -67,3 +73,17 @@ void Object::setAcceleration(glm::vec3 newAcceleration)
 	acceleration=newAcceleration;
 }
 
+void Object::clearForce()
+{
+	totalForce=glm::vec3(0,0,0);
+}
+
+void Object::addForce(glm::vec3 &force)
+{
+	totalForce = totalForce + force;
+}
+
+bool Object::hasFiniteMass()
+{
+	return true;
+}

@@ -6,6 +6,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include "glm/gtx/string_cast.hpp"
 #include <iostream>
 #include "shader.h"
 #include "render.h"
@@ -17,6 +18,7 @@
 #include <unistd.h>
 #include "physics.h"
 #include "projectile.h"
+#include "force.h"
 
 using namespace std;
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -149,17 +151,19 @@ int main()
     }
 
     Object a(vertices,glm::vec3( 0.0f,  0.0f,  0.0f));
-    Physics engine;
     Camera cam(800,800
     );
 
  
      
     Shader modelShader("vertex.shader", "fragment.shader");
- 
     Render terrain(verts, sizeof(verts), indices, sizeof(indices));
-
     Render cube(vertices, sizeof(vertices));
+    Gravity FGravity(glm::vec3(0.0f,-9.8f,0.0f));
+    Drag FDrag(0.7f,0.7f);
+    ForceRegisters forces;
+    forces.add(&a, &FGravity);
+    forces.add(&a, &FDrag);
 
 
     modelShader.use();
@@ -180,7 +184,7 @@ int main()
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		modelShader.use();
-         
+        forces.updateForces(1.0/60.0);
         counter+=0.1f;
         
         glm::mat4 view;
@@ -188,6 +192,9 @@ int main()
         modelShader.uniformMat4(viewM, view);
         modelShader.uniformMat4(projectionM, projection);
 
+        //cout<<"pos="<<glm::to_string(a.getPos())<<endl;
+        //cout<<"velocity="<<glm::to_string(a.getVelocity())<<endl;
+        //cout<<"acceleration="<<glm::to_string(a.getAcceleration())<<endl;
         frames++;
         if((glfwGetTime()-startime)>=1.0)
         {
@@ -196,16 +203,12 @@ int main()
             startime=glfwGetTime();
         }
 
-
-        for(unsigned int i = 0; i < 1; i++)
-        {
-            model = a.getModel();
-            cube.bind(); 
-            modelShader.uniformMat4(modelM, glm::translate(model, a.getPos()));
-            engine.update(&a, glm::vec3(0.0,0.0,0.0));
-            //a.setVelocity(engine.updateVelocity(a.getVelocity(),a.getAcceleration()));
-            cube.draw();
-        }
+        model = a.getModel();
+        cube.bind(); 
+        modelShader.uniformMat4(modelM, glm::translate(model, a.getPos()));
+        Physics::update(&a);
+        //a.setVelocity(engine.updateVelocity(a.getVelocity(),a.getAcceleration()));
+        cube.draw();
 
         glm::mat4 trans = glm::mat4(1.0f);
         trans = glm::translate(trans, glm::vec3(-100, -50, -100));
@@ -213,7 +216,7 @@ int main()
         modelShader.uniformMat4(modelM, model);
         terrain.bind();
         terrain.drawElements();
-
+        a.clearForce();
         glfwSwapBuffers(window);
         glfwPollEvents();
 

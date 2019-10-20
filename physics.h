@@ -3,13 +3,13 @@
 #include <glm/glm.hpp>
 #include "object.h"
 
+//static const glm::vec3 gravity = glm::vec3(0.0,-9.8,0.0);
 class Physics
 {
 private:
-public:
-	glm::vec3 gravity;
 	Physics();
-	void update(Object* object, glm::vec3 foce);
+public:
+	static void update(Object* object);
 };
 
 

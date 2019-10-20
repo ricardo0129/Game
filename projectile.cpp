@@ -2,5 +2,13 @@
 
 Projectile::Projectile(float* verts, glm::vec3 position):Object(verts,position)
 {
-	int a=2;
+	
 }
+
+bool Firework::update(float time)
+{
+	Physics::update(this);
+	age-=time;
+	return (age<0);
+}
+
