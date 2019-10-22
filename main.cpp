@@ -150,7 +150,7 @@ int main()
         }
     }
 
-    Object a(vertices,glm::vec3( 0.0f,  0.0f,  0.0f));
+    Object a(vertices,glm::vec3( 1.0f,  1.0f,  1.0f));
     Camera cam(800,800
     );
 
@@ -161,9 +161,12 @@ int main()
     Render cube(vertices, sizeof(vertices));
     Gravity FGravity(glm::vec3(0.0f,-9.8f,0.0f));
     Drag FDrag(0.7f,0.7f);
+    glm::vec3 start(1.0f,1.0f,1.0f);
+    AnchorSpring FSpring(&start,25.0f,1.0f);
     ForceRegisters forces;
     forces.add(&a, &FGravity);
-    forces.add(&a, &FDrag);
+    //forces.add(&a, &FDrag);
+    forces.add(&a, &FSpring);
 
 
     modelShader.use();
@@ -192,9 +195,9 @@ int main()
         modelShader.uniformMat4(viewM, view);
         modelShader.uniformMat4(projectionM, projection);
 
-        //cout<<"pos="<<glm::to_string(a.getPos())<<endl;
-        //cout<<"velocity="<<glm::to_string(a.getVelocity())<<endl;
-        //cout<<"acceleration="<<glm::to_string(a.getAcceleration())<<endl;
+        cout<<"pos="<<glm::to_string(a.getPos())<<endl;
+        cout<<"velocity="<<glm::to_string(a.getVelocity())<<endl;
+        cout<<"acceleration="<<glm::to_string(a.getAcceleration())<<endl;
         frames++;
         if((glfwGetTime()-startime)>=1.0)
         {

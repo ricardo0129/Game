@@ -29,9 +29,47 @@ public:
 
 };
 
-/**
-* Holds all the force generators and the particles they apply to.
-*/
+class Spring: public ForceGenerator
+{
+	Object *other;
+	float springConstant;
+	float restLength;
+public:
+	Spring(Object *o, float s, float r);
+	virtual void updateForce(Object* object, float duration);
+};
+
+class AnchorSpring: public ForceGenerator
+{
+	glm::vec3* anchor;
+	float springConstant;
+	float restLength;
+public:
+	AnchorSpring(glm::vec3* a, float s, float r);
+	virtual void updateForce(Object* object, float duration);
+
+};
+
+class BungeeSpring: public ForceGenerator
+{
+	Object* other;
+	float springConstant;
+	float restLength;
+public:
+	BungeeSpring(Object* o, float s, float r);
+	virtual void updateForce(Object* object, float duration);
+};
+
+class Boyancy: public ForceGenerator
+{
+	float maxDepth;
+	float volume;
+	float waterHeight;
+	float liquidDensity;
+	Boyancy(float m, float v, float w, float l = 1000.0f);
+	virtual void updateForce(Object* object, float duration);
+};
+
 class ForceRegisters
 {
 protected:
